@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:AvaloniaChat.ViewModels"
+             xmlns:m="clr-namespace:AvaloniaChat.Models"
+			xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AvaloniaChat.Views.MainView"
+             x:DataType="vm:MainViewModel">
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:MainViewModel />
+  </Design.DataContext>
+
+	<Grid RowDefinitions="*, Auto">
+		<ScrollViewer Grid.Row="0" Margin="10">
+			<ItemsControl Name="ChatMessages" ItemsSource="{Binding Messages}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate x:DataType="m:ChatMessage">
+						<Border Margin="5" Padding="10"
+                                Background="{Binding IsUser, Converter={StaticResource BoolToColorConverter}}"
+                                CornerRadius="5">
+							<StackPanel>
+								<TextBlock Text="{Binding Sender.Label}" FontWeight="Bold"/>
+								<md:MarkdownScrollViewer Markdown="{Binding Content}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+
+		<Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="10">
+			<TextBox Grid.Column="0" Name="MessageInput" Watermark="输入消息..." Text="{Binding MessageInput}" KeyDown="MessageInput_KeyDown" />
+			<Button Name="sendBtn" Grid.Column="1" Content="发送" Margin="5,0,0,0" Command="{Binding SendCommand}"/>
+		</Grid>
+	</Grid>
+</UserControl>
