@@ -16,5 +16,9 @@
 
 	<Application.Resources>
 		<converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+		<converters:BoolToAlignmentConverter x:Key="BoolToAlignmentConverter"/>
+		<converters:BoolToCornerConverter x:Key="BoolToCornerConverter"/>
+		<converters:BoolToForegroundConverter x:Key="BoolToForegroundConverter"/>
+		<converters:BoolToContentForegroundConverter x:Key="BoolToContentForegroundConverter"/>
 	</Application.Resources>
 </Application>

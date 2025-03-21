@@ -7,7 +7,9 @@ namespace AvaloniaChat.Services
     public interface IChatService
     {
         Task<string> GetResponseAsync(string message);
-        IAsyncEnumerable<StreamingKernelContent> GetStreamResponse(string message);
+        IAsyncEnumerable<string> GetStreamResponse(string message);
+        void AddUserMessage(string message);
         void AddAssistantMessage(string message);
+        void ClearHistory();
     }
 } 

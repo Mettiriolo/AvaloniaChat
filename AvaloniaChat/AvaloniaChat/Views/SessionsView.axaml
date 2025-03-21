@@ -1,0 +1,95 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:AvaloniaChat.ViewModels"
+             xmlns:m="clr-namespace:AvaloniaChat.Models"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="600"
+             x:Class="AvaloniaChat.Views.SessionsView"
+             x:DataType="vm:SessionsViewModel"
+             Background="#F0F2F5">
+  <Design.DataContext>
+    <vm:SessionsViewModel />
+  </Design.DataContext>
+
+  <Grid RowDefinitions="Auto, *">
+    <!-- 标题栏 -->
+    <Border Grid.Row="0" Background="#2979FF" Padding="12">
+      <Grid ColumnDefinitions="*, Auto">
+        <TextBlock Grid.Column="0" Text="历史会话" Foreground="White" 
+                   FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+        <Button Grid.Column="1" 
+                Content="+" 
+                FontSize="18"
+                Command="{Binding CreateNewSessionCommand}"
+                Padding="12,6"
+                Background="#1565C0"
+                Foreground="White"
+                CornerRadius="4"/>
+      </Grid>
+    </Border>
+
+    <!-- 会话列表 -->
+    <ScrollViewer Grid.Row="1" Padding="0,5">
+      <StackPanel>
+        <ItemsControl ItemsSource="{Binding Sessions}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="m:ChatSession">
+              <Border Margin="8,4" 
+                      Padding="12" 
+                      Background="White" 
+                      CornerRadius="6"
+                      BoxShadow="0 1 2 0 #10000000">
+                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*, Auto">
+                  <!-- 会话标题 -->
+                  <TextBlock Grid.Row="0" Grid.Column="0"
+                             Text="{Binding Title}" 
+                             FontWeight="SemiBold"
+                             FontSize="14"/>
+                  
+                  <!-- 会话日期 -->
+                  <TextBlock Grid.Row="0" Grid.Column="1"
+                             Text="{Binding LastUpdatedAt, StringFormat=\{0:MM-dd HH:mm\}}" 
+                             Foreground="#888888"
+                             FontSize="12"
+                             VerticalAlignment="Center"/>
+                  
+                  <!-- 最后一条消息 -->
+                  <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                             Text="{Binding LastMessage}" 
+                             Foreground="#555555"
+                             FontSize="12"
+                             TextTrimming="CharacterEllipsis"
+                             Margin="0,4,0,0"/>
+                  
+                  <!-- 操作按钮 -->
+                  <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
+                              Orientation="Horizontal" 
+                              HorizontalAlignment="Right"
+                              Margin="0,8,0,0">
+                    <Button Content="打开" 
+                            Command="{Binding $parent[ItemsControl].DataContext.OpenSessionCommand}" 
+                            CommandParameter="{Binding Id}"
+                            Margin="4,0"
+                            Padding="12,6"
+                            Background="#2979FF"
+                            Foreground="White"
+                            CornerRadius="4"/>
+                    <Button Content="删除" 
+                            Command="{Binding $parent[ItemsControl].DataContext.DeleteSessionCommand}" 
+                            CommandParameter="{Binding Id}"
+                            Margin="4,0"
+                            Padding="12,6"
+                            Background="#F44336"
+                            Foreground="White"
+                            CornerRadius="4"/>
+                  </StackPanel>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl> 

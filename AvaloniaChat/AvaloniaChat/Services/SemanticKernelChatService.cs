@@ -14,7 +14,7 @@ namespace AvaloniaChat.Services
         private readonly ChatHistory _chatHistory = new();
         private readonly IChatCompletionService _chatCompletionService;
 
-        public SemanticKernelChatService(string apiKey,string apiUri,string modelId)
+        public SemanticKernelChatService(string apiKey, string apiUri, string modelId)
         {
             var builder = Kernel.CreateBuilder();
 
@@ -45,16 +45,33 @@ namespace AvaloniaChat.Services
             return response.ToString();
         }
 
-        public IAsyncEnumerable<StreamingKernelContent> GetStreamResponse(string message)
+        public async IAsyncEnumerable<string> GetStreamResponse(string message)
         {
             _chatHistory.Add(new ChatMessageContent(AuthorRole.User, message));
             var stream = _chatCompletionService.GetStreamingChatMessageContentsAsync(_chatHistory);
-            return stream;
+            
+            await foreach (var content in stream)
+            {
+                if (content.Content != null)
+                {
+                    yield return content.Content;
+                }
+            }
+        }
+
+        public void AddUserMessage(string message)
+        {
+            _chatHistory.AddUserMessage(message);
         }
 
         public void AddAssistantMessage(string message)
         { 
             _chatHistory.AddAssistantMessage(message);
+        }
+
+        public void ClearHistory()
+        {
+            _chatHistory.Clear();
         }
     }
 } 

@@ -1,19 +1,19 @@
-using Avalonia.Data.Converters;
-using Avalonia.Media;
+﻿using Avalonia.Data.Converters;
+using Avalonia.Layout;
 using System;
 using System.Globalization;
 
 namespace AvaloniaChat.Converters
 {
-    public class BoolToColorConverter : IValueConverter
+    public class BoolToAlignmentConverter : IValueConverter
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is bool isUser)
             {
-                return isUser ? new SolidColorBrush(Color.Parse("#E3F6FF")) : new SolidColorBrush(Color.Parse("#F9F9F9"));
+                return isUser ? HorizontalAlignment.Right : HorizontalAlignment.Left;
             }
-            return new SolidColorBrush(Colors.Transparent);
+            return HorizontalAlignment.Left;
         }
 
         public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -21,4 +21,4 @@ namespace AvaloniaChat.Converters
             throw new NotImplementedException();
         }
     }
-} 
+}

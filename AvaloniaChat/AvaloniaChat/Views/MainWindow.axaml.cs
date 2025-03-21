@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using AvaloniaChat.ViewModels;
 
 namespace AvaloniaChat.Views
 {
@@ -7,6 +8,7 @@ namespace AvaloniaChat.Views
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainWindowViewModel();
         }
     }
 }

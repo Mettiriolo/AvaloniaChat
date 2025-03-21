@@ -4,9 +4,33 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:AvaloniaChat.Views"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
         x:Class="AvaloniaChat.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="AvaloniaChat">
-        <views:MainView />
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Window.Styles>
+        <Style Selector="Window">
+            <Setter Property="MinWidth" Value="800"/>
+            <Setter Property="MinHeight" Value="600"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid>
+        <ContentControl Content="{Binding CurrentViewModel}">
+            <ContentControl.DataTemplates>
+                <DataTemplate DataType="{x:Type vm:MainViewModel}">
+                    <views:MainView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:SessionsViewModel}">
+                    <views:SessionsView />
+                </DataTemplate>
+            </ContentControl.DataTemplates>
+        </ContentControl>
+    </Grid>
 </Window>

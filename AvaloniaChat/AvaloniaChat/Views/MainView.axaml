@@ -4,37 +4,101 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:AvaloniaChat.ViewModels"
              xmlns:m="clr-namespace:AvaloniaChat.Models"
-			xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="AvaloniaChat.Views.MainView"
-             x:DataType="vm:MainViewModel">
+             x:DataType="vm:MainViewModel"
+             Background="#F0F2F5">
   <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:MainViewModel />
   </Design.DataContext>
 
-	<Grid RowDefinitions="*, Auto">
-		<ScrollViewer Grid.Row="0" Margin="10">
-			<ItemsControl Name="ChatMessages" ItemsSource="{Binding Messages}">
-				<ItemsControl.ItemTemplate>
-					<DataTemplate x:DataType="m:ChatMessage">
-						<Border Margin="5" Padding="10"
-                                Background="{Binding IsUser, Converter={StaticResource BoolToColorConverter}}"
-                                CornerRadius="5">
-							<StackPanel>
-								<TextBlock Text="{Binding Sender.Label}" FontWeight="Bold"/>
-								<md:MarkdownScrollViewer Markdown="{Binding Content}"/>
-							</StackPanel>
-						</Border>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</ScrollViewer>
-
-		<Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="10">
-			<TextBox Grid.Column="0" Name="MessageInput" Watermark="输入消息..." Text="{Binding MessageInput}" KeyDown="MessageInput_KeyDown" />
-			<Button Name="sendBtn" Grid.Column="1" Content="发送" Margin="5,0,0,0" Command="{Binding SendCommand}"/>
-		</Grid>
-	</Grid>
+    <Grid RowDefinitions="Auto, *, Auto">
+        <!-- 标题栏 -->
+        <Border Grid.Row="0" Background="#2979FF" Padding="15" BoxShadow="0 1 5 0 #20000000">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Button Grid.Column="0" 
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="5"
+                        Margin="0,0,15,0"
+                        Command="{Binding BackToSessionsCommand}">
+                    <Viewbox Width="20" Height="20">
+                        <Path Data="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" 
+                              Fill="White" Stretch="Uniform"/>
+                    </Viewbox>
+                </Button>
+                
+                <TextBlock Grid.Column="1" Text="{Binding SessionTitle}" Foreground="White" 
+                           FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2" Text="{Binding ModelInfo}" Foreground="White" 
+                           FontSize="12" VerticalAlignment="Center" Opacity="0.8"/>
+            </Grid>
+        </Border>
+        
+        <!-- 聊天区域 -->
+        <Border Grid.Row="1" Margin="10" CornerRadius="8" Background="White" BoxShadow="0 1 3 0 #15000000">
+            <ScrollViewer Name="ChatScroller" Padding="5" Margin="0,0,0,5">
+                <ItemsControl Name="ChatMessages" ItemsSource="{Binding Messages}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="m:ChatMessage">
+                            <Grid Margin="5" HorizontalAlignment="{Binding IsUser, Converter={StaticResource BoolToAlignmentConverter}}">
+                                <Border Padding="12,8" MaxWidth="600" 
+                                        Background="{Binding IsUser, Converter={StaticResource BoolToColorConverter}}"
+                                        BoxShadow="0 1 3 0 #10000000"
+                                        CornerRadius="{Binding IsUser, Converter={StaticResource BoolToCornerConverter}}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Sender.Label}" FontWeight="SemiBold" 
+                                                   Foreground="{Binding IsUser, Converter={StaticResource BoolToForegroundConverter}}"
+                                                   FontSize="13" Margin="0,0,0,4"/>
+                                        <md:MarkdownScrollViewer Markdown="{Binding Content}" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+        
+        <!-- 输入区域 -->
+        <Grid Grid.Row="2" RowDefinitions="Auto,Auto" Margin="10,0,10,10">
+            <!-- 输入状态指示器 -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="5,0,0,5"
+                       IsVisible="{Binding IsProcessing}">
+                <TextBlock Text="AI正在思考" Foreground="#666666" VerticalAlignment="Center"/>
+                <Border Margin="10,0,0,0" CornerRadius="4" ClipToBounds="True">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="8" Height="8" Fill="#2979FF" Margin="0,0,4,0" Opacity="{Binding DotOpacity1}"/>
+                        <Ellipse Width="8" Height="8" Fill="#2979FF" Margin="0,0,4,0" Opacity="{Binding DotOpacity2}"/>
+                        <Ellipse Width="8" Height="8" Fill="#2979FF" Margin="0,0,4,0" Opacity="{Binding DotOpacity3}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+            
+            <!-- 消息输入框和发送按钮 -->
+            <Grid Grid.Row="1" ColumnDefinitions="*, Auto">
+                <Border Grid.Column="0" CornerRadius="20" Background="White" 
+                        BoxShadow="0 1 3 0 #15000000">
+                    <TextBox Name="MessageInput" 
+                             Watermark="输入消息..." 
+                             Text="{Binding MessageInput}" 
+                             KeyDown="MessageInput_KeyDown"
+                             BorderThickness="0"
+                             Padding="15,10"
+                             Background="Transparent"/>
+                </Border>
+                <Button Name="sendBtn" 
+                        Grid.Column="1" 
+                        Content="发送" 
+                        Margin="10,0,0,0" 
+                        Command="{Binding SendCommand}"
+                        IsEnabled="{Binding SendBtnEnabled}"
+                        Background="#2979FF"
+                        Foreground="White"
+                        Padding="15,10"
+                        CornerRadius="20"/>
+            </Grid>
+        </Grid>
+    </Grid>
 </UserControl>
