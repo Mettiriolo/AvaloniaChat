@@ -10,6 +10,7 @@ using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using Azure;
 
 namespace AvaloniaChat.ViewModels
 {
@@ -245,7 +246,7 @@ namespace AvaloniaChat.ViewModels
             var userMessage = new ChatMessage(Sender.User, MessageInput)
             {
                 SessionId = CurrentSessionId,
-                Order = _currentOrder++
+                Order = _currentOrder++,
             };
             Messages.Add(userMessage);
             

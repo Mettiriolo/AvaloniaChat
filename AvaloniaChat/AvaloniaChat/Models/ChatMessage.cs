@@ -1,3 +1,4 @@
+using Avalonia.Controls;
 using ReactiveUI;
 using SQLite;
 using System;
@@ -19,7 +20,21 @@ namespace AvaloniaChat.Models
         public string Content
         {
             get => content;
-            set=> this.RaiseAndSetIfChanged(ref content, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref content, value);
+                MarkdownContent = MarkdownRenderer.Render(value);
+            }
+                
+            
+        }
+
+        private Control _markdownContent;
+        [Ignore]
+        public Control MarkdownContent
+        {
+            get => _markdownContent;
+            set => this.RaiseAndSetIfChanged(ref _markdownContent, value);
         }
 
         public DateTime Timestamp { get; set; } = DateTime.Now;
